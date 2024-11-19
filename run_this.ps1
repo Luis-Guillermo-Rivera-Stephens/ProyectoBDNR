@@ -12,3 +12,7 @@ if ($flag -eq "SI"){
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
+git add clone_logs.txt
+git commit -m "cloned commit"
+git push origin master
+
