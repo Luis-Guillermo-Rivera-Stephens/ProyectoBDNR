@@ -4,12 +4,12 @@ from pymongo import MongoClient
 import pydgraph
 
 CASSANDRA_CLUSTER_IPS = os.getenv('CASSANDRA_CLUSTER_IPS', 'localhost')
-CASSANDRA_KEYSPACE = os.getenv('CASSANDRA_KEYSPACE', 'investments')
+CASSANDRA_KEYSPACE = os.getenv('CASSANDRA_KEYSPACE', 'app')
 CASSANDRA_REPLICATION_FACTOR = os.getenv('CASSANDRA_REPLICATION_FACTOR', '1')
 
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017')
-MONGO_DB_NAME = os.getenv('MONGODB_DB_NAME', 'iteso')
-MONGODB_COLLECTION_NAME = os.getenv('MONGODB_COLLECTION_NAME', 'investments')
+MONGO_DB_NAME = os.getenv('MONGODB_DB_NAME', 'proyecto')
+MONGODB_COLLECTION_NAME = os.getenv('MONGODB_COLLECTION_NAME', 'stats')
 
 DGRAPH_URI = os.getenv('DGRAPH_URI', 'localhost:9080')
 
