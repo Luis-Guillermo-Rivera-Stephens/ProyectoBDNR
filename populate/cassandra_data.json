@@ -1,0 +1,102 @@
+{
+    "administrators": [
+      {
+        "username": "admin1",
+        "password": "password123",
+        "key": "shared_key",
+        "charge": "CFO"
+      },
+      {
+        "username": "admin2",
+        "password": "password123",
+        "key": "shared_key",
+        "charge": "CTO"
+      },
+      {
+        "username": "admin3",
+        "password": "password123",
+        "key": "shared_key",
+        "charge": "COO"
+      }
+    ],
+    "users": [
+      {
+        "username": "user1",
+        "password": "password1"
+      },
+      {
+        "username": "user2",
+        "password": "password2"
+      },
+      {
+        "username": "user3",
+        "password": "password3"
+      }
+    ],
+    "logs": [
+      {
+        "account_id": "uuid1",
+        "game_id": null,
+        "description": "User was created",
+        "start": "2024-11-20T08:00:00",
+        "end": "2024-11-20T08:10:00"
+      },
+      {
+        "account_id": "uuid1",
+        "game_id": "uuid2",
+        "description": "Played the game with uuid uuid2",
+        "start": "2024-11-21T09:00:00",
+        "end": "2024-11-21T11:00:00"
+      },
+      {
+        "account_id": "uuid1",
+        "game_id": "uuid3",
+        "description": "Played the game with uuid uuid3",
+        "start": "2024-11-22T14:00:00",
+        "end": "2024-11-22T16:00:00"
+      },
+      {
+        "account_id": "uuid2",
+        "game_id": null,
+        "description": "User was created",
+        "start": "2024-11-20T08:15:00",
+        "end": "2024-11-20T08:20:00"
+      },
+      {
+        "account_id": "uuid2",
+        "game_id": "uuid4",
+        "description": "Played the game with uuid uuid4",
+        "start": "2024-11-23T10:00:00",
+        "end": "2024-11-23T12:00:00"
+      },
+      {
+        "account_id": "uuid2",
+        "game_id": "uuid5",
+        "description": "Played the game with uuid uuid5",
+        "start": "2024-11-24T13:00:00",
+        "end": "2024-11-24T14:30:00"
+      },
+      {
+        "account_id": "uuid3",
+        "game_id": null,
+        "description": "User was created",
+        "start": "2024-11-20T08:30:00",
+        "end": "2024-11-20T08:40:00"
+      },
+      {
+        "account_id": "uuid3",
+        "game_id": "uuid6",
+        "description": "Played the game with uuid uuid6",
+        "start": "2024-11-25T15:00:00",
+        "end": "2024-11-25T17:00:00"
+      },
+      {
+        "account_id": "uuid3",
+        "game_id": "uuid7",
+        "description": "Played the game with uuid uuid7",
+        "start": "2024-11-26T18:00:00",
+        "end": "2024-11-26T19:30:00"
+      }
+    ]
+  }
+  

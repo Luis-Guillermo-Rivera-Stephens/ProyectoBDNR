@@ -32,7 +32,7 @@ ADMINISTRATOR_TABLE = """
                 key text,
                 creation_date TIMESTAMP,
                 charge TEXT,
-                PRIMARY KEY ((username, admin_id))
+                PRIMARY KEY (username)
         )
 """
 
