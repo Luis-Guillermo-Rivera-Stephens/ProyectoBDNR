@@ -26,7 +26,7 @@ ACCOUNTS_BY_ID_TABLE = """
 
 ADMINISTRATOR_TABLE = """
         CREATE TABLE IF NOT EXISTS ADMINISTRATOR_BY_USER (
-                account_id UUID,
+                admin_id UUID,
                 username TEXT,
                 password TEXT,
                 key text,
