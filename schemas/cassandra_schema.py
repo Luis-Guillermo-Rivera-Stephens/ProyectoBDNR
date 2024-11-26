@@ -38,7 +38,7 @@ ADMINISTRATOR_TABLE = """
 
 USERNAMES = """
         CREATE TABLE IF NOT EXISTS USERNAMES (
-                id_account UUID,
+                id UUID,
                 username TEXT,
                 admin BOOLEAN,
                 PRIMARY KEY (username)

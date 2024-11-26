@@ -22,6 +22,10 @@ CASSANDRA_USERNAMES_MIDDLEWARE = """
     WHERE username = ?
 """
 
+CASSANDRA_REGISTER_USERNAME_QUERY = """
+    INSERT INTO USERNAMES(id, username, admin)
+    VALUES (?, ?, ?)
+"""
 
 CASSANDRA_REGISTER_ACCOUNT_QUERY = """
     INSERT INTO ACCOUNTS_BY_USER (account_id, username, password, creation_date)

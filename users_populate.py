@@ -37,6 +37,8 @@ def populate_administrators(session, administrators):
             query,
             (admin_id, username, password, key, creation_date, charge)
         )
+        username_reg = session.prepare(cassandra_queries.CASSANDRA_REGISTER_USERNAME_QUERY)
+        session.execute(username_reg, (admin_id, username, True))
 
 def create_log(session, account_id):
     log_time = datetime.datetime.now()
@@ -67,6 +69,9 @@ def populate_users(session_cass, session_mongo, users):
         )
         create_log(session_cass, account_id)
         mongo_creation(session_mongo, account_id)
+
+        username_reg = session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_USERNAME_QUERY)
+        session_cass.execute(username_reg, (account_id, username, False))
 
 
 def clear_cassandra_database(session):
