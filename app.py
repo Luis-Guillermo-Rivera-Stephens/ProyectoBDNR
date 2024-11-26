@@ -9,15 +9,16 @@ def print_menu():
 def login_menu():
     username = input("Enter username: ")
     password = input("Enter password: ")
-    choice = input("Enter 1 for user, 2 for admin: ")
+    choice = int(input("Enter 1 for user, 2 for admin: "))
     if choice == 2:
         key = input("Enter the shared key: ")
     else:
         key = None
 
-    account, admin = login.login(connections.Cassandra_session, username, password, key)
+    account, admin, msg = login.login(connections.Cassandra_session, username, password, key)
+    print("ACCOUNT: ",account)
     if account is None:
-        print("Login failed")
+        print(msg)
         return None
     
     if admin:
@@ -42,9 +43,10 @@ def register_menu():
     print("Register as a user or admin")
     username = input("Enter username: ")
     password = input("Enter password: ")
-    choice = input("Enter 1 for user, 2 for admin: ")
+    choice = int(input("Enter 1 for user, 2 for admin: "))
     if choice == 1:
         result, msg = register.register_user(connections.Cassandra_session, username, password)
+        print(msg)
         if result is None:
             print(msg)
             return
@@ -53,10 +55,12 @@ def register_menu():
     elif choice == 2:
         charge = input("Enter charge: ")
         result, msg = register.register_admin(connections.Cassandra_session, username, password, charge)
+        print(msg)
         if result is None:
             print(msg)
             return
         admin_menu()
+        
 def main():
     while True:
         print_menu()
@@ -65,6 +69,9 @@ def main():
             login_menu()
         elif choice == "2":
             register_menu()
+        elif choice == "3":
+            print("Exiting...")
+            break
         else:
             print("Invalid choice")
 
