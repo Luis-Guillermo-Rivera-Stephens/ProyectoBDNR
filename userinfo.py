@@ -47,7 +47,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
         }
     ]
 
-    # Agregación para obtener las 2 categorías más jugadas
+    # Agregación para obtener las 3 categorías más jugadas
     most_played_categories_pipeline = [
         {
             "$match": {
@@ -68,7 +68,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
             }
         },
         {
-            "$limit": 2
+            "$limit": 3
         },
         {
             "$project": {

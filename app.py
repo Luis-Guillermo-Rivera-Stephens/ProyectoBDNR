@@ -80,6 +80,7 @@ def register_menu():
 def main():
     while True:
         print_menu()
+        print("="*50)
         choice = input("Enter choice: ")
         if choice == "1":
             login_menu()
