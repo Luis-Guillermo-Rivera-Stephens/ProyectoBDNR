@@ -14,6 +14,6 @@ class Category(BaseModel):
 
 class UserInfo(BaseModel):
     userID: uuid.UUID = Field(...)
-    TimePlaying: int
+    TimePlaying: int = Field(...)
     Games: List[Game] = []
     Categories: List[Category] = []

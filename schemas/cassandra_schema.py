@@ -70,7 +70,7 @@ LOGS_BY_USER_GAME = """
 """
 
 LOGS_BY_USER_GAME_DATERANGE = """
-        CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME (
+        CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME_DATERANGE (
                 account_id UUID,
                 game_id UUID,
                 description TEXT,
@@ -81,7 +81,7 @@ LOGS_BY_USER_GAME_DATERANGE = """
 """
 
 LOGS_BY_GAME = """
-        CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME (
+        CREATE TABLE IF NOT EXISTS LOGS_BY_GAME (
                 account_id UUID,
                 game_id UUID,
                 description TEXT,
@@ -92,7 +92,7 @@ LOGS_BY_GAME = """
 """
 
 LOGS_BY_GAME_DATERANGE = """
-        CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME (
+        CREATE TABLE IF NOT EXISTS LOGS_BY_GAME_DATERANGE (
                 account_id UUID,
                 game_id UUID,
                 description TEXT,
@@ -105,6 +105,9 @@ LOGS_BY_GAME_DATERANGE = """
 def create_keyspace(session, keyspace, replication_factor):
     print(f"Creating keyspace: {keyspace} with replication factor {replication_factor}")
     session.execute(CREATE_KEYSPACE.format(keyspace, replication_factor))
+
+def set_keyspace(session, keyspace):
+    session.execute(f"USE {keyspace}")
 
 def set_schema(session):
     session.execute(ACCOUNTS_BY_USER_TABLE)

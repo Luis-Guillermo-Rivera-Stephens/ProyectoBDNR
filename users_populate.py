@@ -1,17 +1,27 @@
 import uuid
 import datetime
-from ..connections import Cassandra_session, Mongo_client, MONGODB_COLLECTION_NAME
+import connections 
 from queries import cassandra_queries
 import json
 from models import mongo_schema
+from bson import Binary
 
 def read_data_from_json(file_path):
     with open(file_path, "r") as file:
         return json.load(file)
 
 def mongo_creation(session ,user_id):
-    newuser = mongo_schema.UsersInfo(user_id, 0, [], [])
-    session.database[MONGODB_COLLECTION_NAME].insert_one(newuser.dict(by_alias=True))
+    newuser = mongo_schema.UserInfo(
+    userID=user_id,  
+    TimePlaying=0,   
+    Games=[],
+    Categories=[])
+    newuser_dict = newuser.dict(by_alias=True)
+    newuser_dict['userID'] = Binary.from_uuid(user_id)
+
+    # Insertar en MongoDB
+    session.database[connections.MONGODB_COLLECTION_NAME].insert_one(newuser_dict)
+
 
 def populate_administrators(session, administrators):
     query = session.prepare(cassandra_queries.CASSANDRA_REGISTER_ADMIN_QUERY)
@@ -30,30 +40,42 @@ def populate_administrators(session, administrators):
 
 def create_log(session, account_id):
     log_time = datetime.datetime.now()
-
+    default_game_id = uuid.UUID("00000000-0000-0000-0000-000000000000")
     for tablename in cassandra_queries.CASSANDRA_LOG_TABLES_NAME:
         query = session.prepare(cassandra_queries.CASSANDRA_LOG_QUERY.format(tablename))
-        session.execute(query, (account_id, None, "User created", log_time, log_time))
+        session.execute(query, (account_id, default_game_id, "User created", log_time, log_time))
         
 def populate_users(session_cass, session_mongo, users):
-    query =  session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_ACCOUNT_QUERY)
+    print(users)
+    query1 =  session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_ACCOUNT_QUERY)
+    query2 = session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_ACCOUNT_ID_QUERY)
     for user in users:
         account_id = uuid.uuid4()
         username = user["username"]
         password = user["password"]
         creation_date = datetime.datetime.now()
-
-
+        print("New user: ", account_id, username, password, creation_date)
+        print("Query 1")
         session_cass.execute(
-            query,
-            (account_id, username, password, creation_date,
-             account_id, username, password, creation_date)
+            query1,
+            (account_id, username, password, creation_date)
+        )
+        print("Query 2")
+        session_cass.execute(
+            query2,
+            (account_id, username, password, creation_date)
         )
         create_log(session_cass, account_id)
         mongo_creation(session_mongo, account_id)
 
 
+def clear_cassandra_database(session):
+    for table in cassandra_queries.CASSANDRA_ALL_TABLES:
+        query = f"TRUNCATE {table}"
+        session.execute(query)
 
+def clear_mongodb_database(session):
+    session.database[connections.MONGODB_COLLECTION_NAME].delete_many({})
 
 def main():
     file_path = "./populate_data/cassandra_data.json"
@@ -62,8 +84,16 @@ def main():
     administrators = data["administrators"]
     users = data["users"]
 
-    session_cass = Cassandra_session
-    session_mongo = Mongo_client
+    flag = input("deseas eliminar toda la data antes de hacer el populate? (y/n): ")
+    
+    session_cass = connections.Cassandra_session
+    session_mongo = connections.Mongo_client
+    
+    if flag == "y":
+        clear_cassandra_database(session_cass)
+        clear_mongodb_database(session_mongo)
+
+
     populate_administrators(session_cass, administrators)
     populate_users(session_cass, session_mongo, users)
 

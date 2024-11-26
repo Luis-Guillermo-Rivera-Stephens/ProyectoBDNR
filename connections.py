@@ -19,8 +19,8 @@ def cassandra_connection():
     cluster = Cluster(CASSANDRA_CLUSTER_IPS.split(','))
     session = cluster.connect()
     cassandra_schema.create_keyspace(session, CASSANDRA_KEYSPACE, CASSANDRA_REPLICATION_FACTOR)
+    cassandra_schema.set_keyspace(session, CASSANDRA_KEYSPACE)
     cassandra_schema.set_schema(session)
-    session.set_keyspace(CASSANDRA_KEYSPACE)
     return session
 
 def mongodb_connection():
