@@ -36,6 +36,15 @@ ADMINISTRATOR_TABLE = """
         )
 """
 
+USERNAMES = """
+        CREATE TABLE IF NOT EXISTS USERNAMES (
+                id_account UUID,
+                username TEXT,
+                admin BOOLEAN,
+                PRIMARY KEY (username)
+        )
+"""
+
 LOGS_BY_USER = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_USER (
                 account_id UUID,
@@ -110,6 +119,7 @@ def set_keyspace(session, keyspace):
     session.execute(f"USE {keyspace}")
 
 def set_schema(session):
+    session.execute(USERNAMES)
     session.execute(ACCOUNTS_BY_USER_TABLE)
     session.execute(ACCOUNTS_BY_ID_TABLE)
     session.execute(ADMINISTRATOR_TABLE)
