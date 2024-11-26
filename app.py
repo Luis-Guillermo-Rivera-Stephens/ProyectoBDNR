@@ -45,7 +45,7 @@ def register_menu():
     password = input("Enter password: ")
     choice = int(input("Enter 1 for user, 2 for admin: "))
     if choice == 1:
-        result, msg = register.register_user(connections.Cassandra_session, username, password)
+        result, msg = register.register_user(connections.Cassandra_session, connections.Mongo_client,username, password)
         print(msg)
         if result is None:
             print(msg)

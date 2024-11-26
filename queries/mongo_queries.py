@@ -1,69 +1,72 @@
-from datetime import datetime
+from typing import Optional
+from models.mongo_schema import Game, Category, UserInfo
 import uuid
+from connections import MONGODB_COLLECTION_NAME
 
-def register_user(mongo_collection, username: str, password: str, admin_key: str = None):
-    user_type = "admin" if admin_key == "specific_admin_key" else "player"
-    if admin_key and user_type != "admin":
-        return {"status": "error", "message": "Invalid admin key."}
-
-    user = {
-        "_id": str(uuid.uuid4()),
-        "username": username,
-        "password": password,  
-        "user_type": user_type,
-        "TimePlaying": 0,
-        "Games": [],
-        "Categories": []
-    }
-    mongo_collection.insert_one(user)
-    return {"status": "success", "user_id": user["_id"]}
-
-def start_game(mongo_collection, user_id: str, game_id: str, category: str):
-    user = mongo_collection.find_one({"_id": user_id})
-    if not user:
-        return {"status": "error", "message": "User not found."}
-
-    category_entry = next((cat for cat in user["Categories"] if cat["category"] == category), None)
-    if not category_entry:
-        user["Categories"].append({"category": category, "time_playing": 0})
-
-    game_entry = {
-        "_gameID": game_id,
-        "played_counter": 1,
-        "time_playing": 0,
-        "category": category
-    }
-    user["Games"].append(game_entry)
-    mongo_collection.update_one({"_id": user_id}, {"$set": {"Games": user["Games"], "Categories": user["Categories"]}})
-
-    log_action(mongo_collection, user_id, f"Started game {game_id} in category {category}")
-    return {"status": "success", "message": "Game started."}
-
-def update_time_playing(mongo_collection, user_id: str, game_id: str, additional_time: int):
-    user = mongo_collection.find_one({"_id": user_id})
-    if not user:
-        return {"status": "error", "message": "User not found."}
-
-    for game in user["Games"]:
-        if game["_gameID"] == game_id:
-            game["time_playing"] += additional_time
-            break
-
-    for category in user["Categories"]:
-        if category["category"] == game["category"]:
-            category["time_playing"] += additional_time
-            break
-
-    user["TimePlaying"] += additional_time
-
-    mongo_collection.update_one({"_id": user_id}, {"$set": user})
-    log_action(mongo_collection, user_id, f"Updated playing time for game {game_id} by {additional_time} minutes.")
-    return {"status": "success", "message": "Playing time updated."}
-
-def log_action(mongo_collection, user_id: str, action: str):
-    log_entry = {
-        "user_id": user_id,
-        "action": action,
-        "timestamp": datetime.utcnow()
-    }
-    mongo_collection.insert_one(log_entry)
+def update_stats(
+    session,
+    user_id,
+    game_id,
+    game_category,
+    time_played,
+    played_counter = 1):
+    try:
+        user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": user_id})
+        if not user_data:
+            return False
+        
+        user = UserInfo(
+            userID=user_data["userID"],
+            TimePlaying=user_data["TimePlaying"],
+            Games=user_data.get("Games", []), 
+            Categories=user_data.get("Categories", [])
+        )
+        
+        
+        user.TimePlaying += time_played
+        
+        game_found = False
+        for game in user.Games:
+            if game.gameID == game_id:
+                game.time_playing += time_played
+                game.played_counter += played_counter
+                game_found = True
+                break
+                
+        if not game_found:
+            new_game = Game(
+                _gameID=game_id,
+                played_counter=played_counter,
+                time_playing=time_played,
+                category=game_category
+            )
+            user.Games.append(new_game)
+            
+        category_found = False
+        for cat in user.Categories:
+            if cat.category == game_category:
+                cat.time_playing += time_played
+                category_found = True
+                break
+                
+        if not category_found:
+            new_category = Category(
+                category=game_category,
+                time_playing=time_played
+            )
+            user.Categories.append(new_category)
+            
+        session.database[MONGODB_COLLECTION_NAME].update_one(
+            {"userID": user_id},
+            {"$set": {
+                "TimePlaying": user.TimePlaying,
+                "Games": [game.dict(by_alias=True) for game in user.Games],
+                "Categories": [cat.dict() for cat in user.Categories]
+            }}
+        )
+        
+        return True
+        
+    except Exception as e:
+        print(f"Error updating user stats: {str(e)}")
+        return False
