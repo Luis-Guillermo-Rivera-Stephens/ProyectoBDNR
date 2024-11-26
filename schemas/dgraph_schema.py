@@ -1,30 +1,27 @@
 import pydgraph
 
 def set_schema(client):
+    client.alter(pydgraph.Operation(drop_all=True))
     schema = """
     type Juego {
-        _id
-        name
+        j_name
         description
         category
         related_with
     }
 
     type Categoria {
-        _id
-        name
+        c_name
     }
 
     # Juego Properties
-    _id: string @index(exact) . 
-    name: string @index(term) . 
-    description: string .       
-    category: uid .             
-    related_with: [uid] .        
+    j_name: string @index(term) .
+    description: string .
+    category: uid .              # Relación con un Categoria (uid)
+    related_with: [uid] .        # Lista de relaciones con otros Juegos (uid)
 
     # Categoria Properties
-    _id: string @index(exact) . 
-    name: string @index(term) . 
+    c_name: string @index(term) .
     """
     op = pydgraph.Operation(schema=schema)
     client.alter(op)

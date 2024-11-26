@@ -1,14 +1,14 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Union
 
 class Categoria(BaseModel):
-    _id: str
-    name: str
+    uid: str
+    c_name: str
 
 class Juego(BaseModel):
-    _id: str
-    name: str
+    uid: str
+    j_name: str
     description: str
-    category: str
-    related_with: List[str]
+    category: Union[str, dict]  # Puede ser un UID o un diccionario con "uid"
+    related_with: List[Union[str, dict]]  # Lista de UID o diccionarios con "uid"
 
