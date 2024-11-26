@@ -7,6 +7,7 @@ def print_menu():
     print("3. Exit")
 
 def login_menu():
+    print("="*50)
     username = input("Enter username: ")
     password = input("Enter password: ")
     choice = int(input("Enter 1 for user, 2 for admin: "))
@@ -28,18 +29,21 @@ def login_menu():
 
 
 def admin_menu():
+    print("="*50)
     print("Welcome, admin!")
     while True:
         print("admin options")
         input("enter option")
 
 def user_menu(account):
+    print("="*50)
     print(f"Welcome {account.username}!")
     while True:
         print("user options")
         input("enter option")
 
 def register_menu():
+    print("="*50)
     print("Register as a user or admin")
     username = input("Enter username: ")
     password = input("Enter password: ")
