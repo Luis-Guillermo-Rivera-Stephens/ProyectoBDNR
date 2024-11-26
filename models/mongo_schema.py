@@ -13,7 +13,7 @@ class Category(BaseModel):
     time_playing: int
 
 class UserInfo(BaseModel):
-    userID: uuid.UUID = Field(default_factory=uuid.uuid4, alias="_UserID")
+    userID: uuid.UUID = Field(...)
     TimePlaying: int
     Games: List[Game] = []
     Categories: List[Category] = []
