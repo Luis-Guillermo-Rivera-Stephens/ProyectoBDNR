@@ -1,60 +1,57 @@
 import json
-from ProyectoBDNR.schemas.dgraph_schema import set_schema
-from pydgraph import DgraphClient, DgraphClientStub
-from dgraph_model import Categoria, Juego
+import pydgraph
+from models.dgraph_model import Categoria, Juego
 
+def drop_all(client):
+    client.alter(pydgraph.Operation(drop_all=True))
 
-def connect_dgraph():
-    stub = DgraphClientStub('localhost:9080')
-    client = DgraphClient(stub)
-    return client, stub
-
-
-def populate_categories(client, categories):
-    txn = client.txn()
+def populate_dgraph(client, data_path):
+    """
+    Función para popular Dgraph con datos desde un archivo JSON.
+    """
     try:
-        for category_data in categories:
-            category = Categoria(**category_data)
-            mutation = {
-                "uid": "_:" + category._id,
-                "dgraph.type": "Categoria",
-                "_id": category._id,
-                "name": category.name
-            }
-            txn.mutate(set_obj=mutation)
-        txn.commit()
-    finally:
-        txn.discard()
+        
+        with open(data_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
 
+       
+        txn = client.txn()
 
-def populate_games(client, games):
-    txn = client.txn()
-    try:
-        for game_data in games:
-            game = Juego(**game_data)
-            mutation = {
-                "uid": "_:" + game._id,
-                "dgraph.type": "Juego",
-                "_id": game._id,
-                "name": game.name,
-                "description": game.description,
-                "category": f"_:{game.category}",
-                "related_with": [f"_:{related_id}" for related_id in game.related_with]
-            }
-            txn.mutate(set_obj=mutation)
-        txn.commit()
-    finally:
-        txn.discard()
+        try:
+            
+            mutation = pydgraph.Mutation(commit_now=True, set_json=json.dumps(data).encode("utf-8"))
+            response = txn.mutate(mutation)
+            print("Datos insertados correctamente.")
+            print(f"UIDs creados: {response.uids}")
 
+        except Exception as e:
+            print(f"Error durante la mutación: {e}")
+            txn.discard()
+        finally:
+            txn.discard()
 
-def main():
-    client, stub = connect_dgraph()
-    set_schema(client)  
-    with open('./populate_data/dgraph.json') as f:
-        data = json.load(f)
-    populate_categories(client, data['categories'])
-    populate_games(client, data['juegos'])
-    stub.close()
+    except FileNotFoundError:
+        print(f"Archivo no encontrado: {data_path}")
+    except json.JSONDecodeError:
+        print("Error al decodificar el archivo JSON.")
+
 
 if __name__ == "__main__":
-    main()
+    # Conectar a Dgraph
+    stub = pydgraph.DgraphClientStub("localhost:9080")
+    client = pydgraph.DgraphClient(stub)
+
+    try:
+        drop_all(client)
+        print("Esquema y datos eliminados (DROP ALL).")
+        
+        from schemas.dgraph_schema import set_schema
+        set_schema(client)
+
+        
+        data_path = "./populate_data/dgraph.json"
+        populate_dgraph(client, data_path)
+
+    finally:
+        
+        stub.close()

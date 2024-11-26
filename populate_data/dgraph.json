@@ -1,182 +1,236 @@
-{
-    "juegos": [
-      {
-        "_id": "101",
-        "name": "Blackjack",
-        "description": "Juego de mesa donde el objetivo es sumar 21 puntos sin pasarse.",
-        "category": "1",
-        "related_with": ["502", "303"]
-      },
-      {
-        "_id": "102",
-        "name": "Ruleta Europea",
-        "description": "Juego de mesa donde los jugadores apuestan a números, colores o combinaciones.",
-        "category": "1",
-        "related_with": ["503", "801"]
-      },
-      {
-        "_id": "103",
-        "name": "Texas Hold'em Poker",
-        "description": "Una variante del póker muy popular.",
-        "category": "1",
-        "related_with": ["303", "501"]
-      },
-      {
-        "_id": "201",
-        "name": "Starburst",
-        "description": "Máquina tragamonedas con una temática espacial.",
-        "category": "2",
-        "related_with": ["301"]
-      },
-      {
-        "_id": "202",
-        "name": "Gonzo's Quest",
-        "description": "Tragamonedas basada en la búsqueda de oro de un conquistador.",
-        "category": "2",
-        "related_with": ["203"]
-      },
-      {
-        "_id": "203",
-        "name": "Book of Ra",
-        "description": "Tragamonedas inspirada en la mitología egipcia.",
-        "category": "2",
-        "related_with": ["202"]
-      },
-      {
-        "_id": "301",
-        "name": "Jacks or Better",
-        "description": "Video póker básico donde se busca un par de jotas o mejor.",
-        "category": "3",
-        "related_with": ["201"]
-      },
-      {
-        "_id": "302",
-        "name": "Deuces Wild",
-        "description": "Video póker donde los doses son comodines.",
-        "category": "3",
-        "related_with": ["303"]
-      },
-      {
-        "_id": "303",
-        "name": "Joker Poker",
-        "description": "Video póker con un comodín adicional.",
-        "category": "3",
-        "related_with": ["302", "101"]
-      },
-      {
-        "_id": "401",
-        "name": "Bingo",
-        "description": "Juego de lotería donde se marcan números en un cartón.",
-        "category": "4",
-        "related_with": ["402"]
-      },
-      {
-        "_id": "402",
-        "name": "Keno",
-        "description": "Juego de lotería donde los jugadores seleccionan números para un sorteo.",
-        "category": "4",
-        "related_with": ["401"]
-      },
-      {
-        "_id": "403",
-        "name": "Scratch Cards",
-        "description": "Juegos de lotería instantáneos en tarjetas de raspar.",
-        "category": "4",
-        "related_with": ["401"]
-      },
-      {
-        "_id": "501",
-        "name": "Live Blackjack",
-        "description": "Versión en vivo del blackjack con un crupier real.",
-        "category": "5",
-        "related_with": ["101"]
-      },
-      {
-        "_id": "502",
-        "name": "Live Roulette",
-        "description": "Ruleta en vivo con interacción en tiempo real.",
-        "category": "5",
-        "related_with": ["102"]
-      },
-      {
-        "_id": "503",
-        "name": "Live Baccarat",
-        "description": "Juego en vivo de baccarat con crupieres reales.",
-        "category": "5",
-        "related_with": ["102"]
-      },
-      {
-        "_id": "601",
-        "name": "Fútbol",
-        "description": "Apuestas deportivas en partidos de fútbol.",
-        "category": "6",
-        "related_with": ["603"]
-      },
-      {
-        "_id": "602",
-        "name": "Carreras de caballos",
-        "description": "Apuestas en competencias de caballos.",
-        "category": "6",
-        "related_with": ["603"]
-      },
-      {
-        "_id": "603",
-        "name": "E-sports",
-        "description": "Apuestas en competencias de videojuegos como CS:GO o LoL.",
-        "category": "6",
-        "related_with": ["601", "602"]
-      },
-      {
-        "_id": "701",
-        "name": "Rummy",
-        "description": "Juego de cartas donde se busca formar sets o secuencias.",
-        "category": "7",
-        "related_with": ["702"]
-      },
-      {
-        "_id": "702",
-        "name": "Bridge",
-        "description": "Juego de cartas de estrategia en parejas.",
-        "category": "7",
-        "related_with": ["701"]
-      },
-      {
-        "_id": "703",
-        "name": "Crazy Eights",
-        "description": "Juego de cartas donde el objetivo es deshacerse de las cartas antes que los demás.",
-        "category": "7",
-        "related_with": ["701"]
-      },
-      {
-        "_id": "801",
-        "name": "Big Six Wheel",
-        "description": "Rueda de la fortuna donde se apuesta al segmento que detendrá la rueda.",
-        "category": "8",
-        "related_with": ["803"]
-      },
-      {
-        "_id": "802",
-        "name": "Dream Catcher",
-        "description": "Juego de rueda de la fortuna en vivo.",
-        "category": "8",
-        "related_with": ["803"]
-      },
-      {
-        "_id": "803",
-        "name": "Crazy Time",
-        "description": "Rueda de la fortuna con múltiples bonificaciones.",
-        "category": "8",
-        "related_with": ["801", "802"]
-      }],
-      "categories": [
-      { "_id": "1", "name": "Juegos de mesa" },
-      { "_id": "2", "name": "Máquinas tragamonedas (Slots)" },
-      { "_id": "3", "name": "Video poker" },
-      { "_id": "4", "name": "Juegos de lotería" },
-      { "_id": "5", "name": "Juegos con crupier en vivo" },
-      { "_id": "6", "name": "Apuestas deportivas y virtuales" },
-      { "_id": "7", "name": "Juegos de cartas tradicionales" },
-      { "_id": "8", "name": "Juegos de rueda de la fortuna" }
-    ]   
+[
+  {
+      "uid": "_:cat1",
+      "c_name": "Tragamonedas"
+  },
+  {
+      "uid": "_:cat2",
+      "c_name": "Juegos de Mesa"
+  },
+  {
+      "uid": "_:cat3",
+      "c_name": "Casino en Vivo"
+  },
+  {
+      "uid": "_:cat4",
+      "c_name": "Video Póker"
+  },
+  {
+      "uid": "_:cat5",
+      "c_name": "Juegos de Lotería y Bingo"
+  },
+  {
+      "uid": "_:cat6",
+      "c_name": "Apuestas Deportivas"
+  },
+  {
+      "uid": "_:game1",
+      "j_name": "Starburst",
+      "description": "Popular tragamonedas galáctico",
+      "category": {"uid": "_:cat1"},
+      "related_with": [{"uid": "_:game2"}, {"uid": "_:game3"}, {"uid": "_:game6"}]
+  },
+  {
+      "uid": "_:game2",
+      "j_name": "Book of Dead",
+      "description": "Exploración egipcia",
+      "category": {"uid": "_:cat1"},
+      "related_with": [{"uid": "_:game1"}, {"uid": "_:game4"}]
+  },
+  {
+      "uid": "_:game3",
+      "j_name": "Gonzo's Quest",
+      "description": "Aventura en búsqueda de oro",
+      "category": {"uid": "_:cat1"},
+      "related_with": [{"uid": "_:game1"}, {"uid": "_:game2"}]
+  },
+  {
+      "uid": "_:game4",
+      "j_name": "Mega Moolah",
+      "description": "Jackpot progresivo",
+      "category": {"uid": "_:cat1"},
+      "related_with": [{"uid": "_:game2"}, {"uid": "_:game5"}]
+  },
+  {
+      "uid": "_:game5",
+      "j_name": "Sweet Bonanza",
+      "description": "Tragamonedas dulce",
+      "category": {"uid": "_:cat1"},
+      "related_with": [{"uid": "_:game4"}]
+  },
+  {
+      "uid": "_:game6",
+      "j_name": "Ruleta Europea",
+      "description": "Ruleta clásica europea",
+      "category": {"uid": "_:cat2"},
+      "related_with": [{"uid": "_:game7"}, {"uid": "_:game1"}]
+  },
+  {
+      "uid": "_:game7",
+      "j_name": "Ruleta Americana",
+      "description": "Ruleta con doble cero",
+      "category": {"uid": "_:cat2"},
+      "related_with": [{"uid": "_:game6"}, {"uid": "_:game9"}]
+  },
+  {
+      "uid": "_:game8",
+      "j_name": "Blackjack Clásico",
+      "description": "Juego de cartas clásico",
+      "category": {"uid": "_:cat2"},
+      "related_with": [{"uid": "_:game9"}, {"uid": "_:game12"}]
+  },
+  {
+      "uid": "_:game9",
+      "j_name": "Texas Hold'em",
+      "description": "Variante popular de póker",
+      "category": {"uid": "_:cat2"},
+      "related_with": [{"uid": "_:game7"}, {"uid": "_:game8"}, {"uid": "_:game12"}]
+  },
+  {
+      "uid": "_:game10",
+      "j_name": "Baccarat",
+      "description": "Juego de cartas elegante",
+      "category": {"uid": "_:cat2"},
+      "related_with": [{"uid": "_:game11"}]
+  },
+  {
+      "uid": "_:game11",
+      "j_name": "Ruleta en Vivo",
+      "description": "Ruleta con crupier en vivo",
+      "category": {"uid": "_:cat3"},
+      "related_with": [{"uid": "_:game6"}, {"uid": "_:game12"}]
+  },
+  {
+      "uid": "_:game12",
+      "j_name": "Blackjack en Vivo",
+      "description": "Blackjack con crupier en vivo",
+      "category": {"uid": "_:cat3"},
+      "related_with": [{"uid": "_:game8"}, {"uid": "_:game9"}]
+  },
+  {
+      "uid": "_:game13",
+      "j_name": "Baccarat en Vivo",
+      "description": "Baccarat con crupier en vivo",
+      "category": {"uid": "_:cat3"},
+      "related_with": [{"uid": "_:game10"}]
+  },
+  {
+      "uid": "_:game14",
+      "j_name": "Crazy Time",
+      "description": "Ruleta en vivo interactiva",
+      "category": {"uid": "_:cat3"},
+      "related_with": [{"uid": "_:game15"}]
+  },
+  {
+      "uid": "_:game15",
+      "j_name": "Monopoly Live",
+      "description": "Juego de mesa en vivo",
+      "category": {"uid": "_:cat3"},
+      "related_with": [{"uid": "_:game14"}]
+  },
+  {
+      "uid": "_:game16",
+      "j_name": "Jacks or Better",
+      "description": "Clásico de video póker",
+      "category": {"uid": "_:cat4"},
+      "related_with": [{"uid": "_:game17"}]
+  },
+  {
+      "uid": "_:game17",
+      "j_name": "Deuces Wild",
+      "description": "Póker con comodines",
+      "category": {"uid": "_:cat4"},
+      "related_with": [{"uid": "_:game16"}, {"uid": "_:game18"}]
+  },
+  {
+      "uid": "_:game18",
+      "j_name": "Aces & Faces",
+      "description": "Video póker avanzado",
+      "category": {"uid": "_:cat4"},
+      "related_with": [{"uid": "_:game17"}, {"uid": "_:game19"}]
+  },
+  {
+      "uid": "_:game19",
+      "j_name": "Double Bonus Poker",
+      "description": "Póker con bonificaciones",
+      "category": {"uid": "_:cat4"},
+      "related_with": [{"uid": "_:game18"}]
+  },
+  {
+      "uid": "_:game20",
+      "j_name": "Tens or Better",
+      "description": "Variante de video póker",
+      "category": {"uid": "_:cat4"},
+      "related_with": [{"uid": "_:game19"}]
+  },
+  {
+      "uid": "_:game21",
+      "j_name": "Bingo 90 Bolas",
+      "description": "Variante clásica de bingo",
+      "category": {"uid": "_:cat5"},
+      "related_with": [{"uid": "_:game22"}]
+  },
+  {
+      "uid": "_:game22",
+      "j_name": "Bingo 75 Bolas",
+      "description": "Variante americana de bingo",
+      "category": {"uid": "_:cat5"},
+      "related_with": [{"uid": "_:game21"}]
+  },
+  {
+      "uid": "_:game23",
+      "j_name": "Keno",
+      "description": "Juego de lotería rápida",
+      "category": {"uid": "_:cat5"},
+      "related_with": [{"uid": "_:game24"}]
+  },
+  {
+      "uid": "_:game24",
+      "j_name": "Lotería Clásica",
+      "description": "Juego de azar tradicional",
+      "category": {"uid": "_:cat5"},
+      "related_with": [{"uid": "_:game23"}]
+  },
+  {
+      "uid": "_:game25",
+      "j_name": "Cartones Múltiples",
+      "description": "Juego avanzado de bingo",
+      "category": {"uid": "_:cat5"},
+      "related_with": [{"uid": "_:game23"}]
+  },
+  {
+      "uid": "_:game26",
+      "j_name": "Apuestas Virtuales",
+      "description": "Simulación de apuestas deportivas",
+      "category": {"uid": "_:cat6"},
+      "related_with": [{"uid": "_:game30"}]
+  },
+  {
+      "uid": "_:game27",
+      "j_name": "Fútbol Virtual",
+      "description": "Apuestas en fútbol virtual",
+      "category": {"uid": "_:cat6"},
+      "related_with": [{"uid": "_:game26"}]
+  },
+  {
+      "uid": "_:game28",
+      "j_name": "Apuestas en Vivo",
+      "description": "Apuestas deportivas en tiempo real",
+      "category": {"uid": "_:cat6"},
+      "related_with": [{"uid": "_:game26"}]
+  },
+  {
+      "uid": "_:game29",
+      "j_name": "Fórmula 1 Virtual",
+      "description": "Carreras virtuales con apuestas",
+      "category": {"uid": "_:cat6"},
+      "related_with": [{"uid": "_:game30"}]
+  },
+  {
+      "uid": "_:game30",
+      "j_name": "NBA Virtual",
+      "description": "Apuestas en baloncesto virtual",
+      "category": {"uid": "_:cat6"},
+      "related_with": [{"uid": "_:game29"}, {"uid": "_:game26"}]
   }
-  
+]
