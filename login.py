@@ -17,7 +17,7 @@ def login(session, username, password, key = None):
          admin = False
    
     
-    result = session.execute(query, (username))
+    result = session.execute(query, (username,))
     if result[0].password != password:
         return None
     if usernameRes.admin and result[0].key != key:

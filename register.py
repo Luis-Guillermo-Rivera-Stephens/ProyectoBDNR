@@ -1,5 +1,5 @@
 import login
-from queries.cassandra_queries import CASSANDRA_REGISTER_ACCOUNT_QUERY, CASSANDRA_REGISTER_ACCOUNT_ID_QUERY
+from queries.cassandra_queries import CASSANDRA_REGISTER_ACCOUNT_QUERY, CASSANDRA_REGISTER_ACCOUNT_ID_QUERY, CASSANDRA_REGISTER_ADMIN_QUERY
 import uuid
 from datetime import datetime, timezone
 from models import mongo_schema
@@ -26,13 +26,32 @@ def register_user(session,username, password):
         
 
     except Exception as e:
-        print(f"Error registering user: {e}")
-        return False
+        return None, f"Error registering user: {e}"
     
     result = login.login(username, password)
     if result is None: 
-        return False
+        return None, f"Error getting user {username}"
     else:
-        return result
+        return result, f"User {username} registered"
 
+def register_admin(session, username, password, charge):
+        try: 
+            flag, usernameRes = exist.username_exist(session, username) 
+            if flag:
+                return None, f"Username {usernameRes.username} is already registered"
+        
+            account_id = uuid.uuid4()
+            creation_date = datetime.now(timezone.utc)
 
+            query1 = session.prepare(CASSANDRA_REGISTER_ADMIN_QUERY)
+            session.execute(query1, [account_id, username, password, "shared_key" ,creation_date, charge])
+            
+
+        except Exception as e:
+            return None, f"Error registering user: {e}"
+    
+        result = login.login(username, password)
+        if result is None: 
+            return None, f"Error getting user {username}"
+        else:
+            return result, f"User {username} registered"
