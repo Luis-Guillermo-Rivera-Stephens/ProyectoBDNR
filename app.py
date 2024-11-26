@@ -50,6 +50,12 @@ def register_menu():
         if result is None:
             print(msg)
             return
+        
+        result, admin, msg = login.login(connections.Cassandra_session, username, password, "shared_key")
+        print(msg)
+        if result is None: 
+            return 
+
         user_menu(result)
 
     elif choice == 2:
@@ -59,6 +65,12 @@ def register_menu():
         if result is None:
             print(msg)
             return
+        
+        result, admin, msg = login.login(connections.Cassandra_session, username, password, "shared_key")
+        print(msg)
+        if result is None: 
+            return 
+
         admin_menu()
         
 def main():

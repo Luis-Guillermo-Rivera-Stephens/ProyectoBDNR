@@ -1,5 +1,5 @@
 import login
-from queries.cassandra_queries import CASSANDRA_REGISTER_ACCOUNT_QUERY, CASSANDRA_REGISTER_ACCOUNT_ID_QUERY, CASSANDRA_REGISTER_ADMIN_QUERY
+from queries.cassandra_queries import CASSANDRA_REGISTER_ACCOUNT_QUERY, CASSANDRA_REGISTER_ACCOUNT_ID_QUERY, CASSANDRA_REGISTER_ADMIN_QUERY, CASSANDRA_REGISTER_USERNAME_QUERY
 import uuid
 from datetime import datetime, timezone
 from models import mongo_schema
@@ -21,18 +21,17 @@ def register_user(session,username, password):
 
         query1 = session.prepare(CASSANDRA_REGISTER_ACCOUNT_QUERY)
         query2 = session.prepare(CASSANDRA_REGISTER_ACCOUNT_ID_QUERY)
+        username_query = session.prepare(CASSANDRA_REGISTER_USERNAME_QUERY)
+
         session.execute(query1, [account_id, username, password, creation_date])
         session.execute(query2, [account_id, username, password, creation_date])
+        session.execute(username_query, [account_id, username, False])
         
 
     except Exception as e:
         return None, f"Error registering user: {e}"
     
-    result = login.login(username, password)
-    if result is None: 
-        return None, f"Error getting user {username}"
-    else:
-        return result, f"User {username} registered"
+    return True, f"User {username} registered"
 
 def register_admin(session, username, password, charge):
         try: 
@@ -44,14 +43,12 @@ def register_admin(session, username, password, charge):
             creation_date = datetime.now(timezone.utc)
 
             query1 = session.prepare(CASSANDRA_REGISTER_ADMIN_QUERY)
+            username_query = session.prepare(CASSANDRA_REGISTER_USERNAME_QUERY)
             session.execute(query1, [account_id, username, password, "shared_key" ,creation_date, charge])
+            session.execute(username_query, [account_id, username, True])
             
 
         except Exception as e:
             return None, f"Error registering user: {e}"
     
-        result = login.login(username, password)
-        if result is None: 
-            return None, f"Error getting user {username}"
-        else:
-            return result, f"User {username} registered"
+        return True, f"User {username} registered"
