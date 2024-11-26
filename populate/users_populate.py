@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from ..connections import Cassandra_session
+from ..connections import Cassandra_session, Mongo_client, MONGODB_COLLECTION_NAME
 from ..queries import cassandra_queries
 import json
 
@@ -47,6 +47,10 @@ def create_log(session, account_id):
         query = session.prepare(cassandra_queries.CASSANDRA_LOG_QUERY.format(tablename))
         session.execute(query, (account_id, None, "User created", log_time, log_time))
 
+def mongo_creation(session ,user_id):
+    newuser = models.Statistics(user_id, 0, [], [])
+    session.database[MONGODB_COLLECTION_NAME].insert_one(newuser)
+
 def main():
     file_path = "./cassandra_data.json"
     data = read_data_from_json(file_path)
@@ -57,6 +61,8 @@ def main():
     session = Cassandra_session
     populate_administrators(session, administrators)
     populate_users(session, users)
+
+
 
 
 if __name__ == "__main__":
