@@ -1,8 +1,7 @@
-import datetime
-import json
 import pydgraph
 
-"""
+def set_schema(client):
+    schema = """
     type Juego {
         _id
         name
@@ -21,11 +20,11 @@ import pydgraph
     name: string @index(term) . 
     description: string .       
     category: uid .             
-    relatedWith: [uid] .        
+    related_with: [uid] .        
 
-
-    Categoria Properties
+    # Categoria Properties
     _id: string @index(exact) . 
     name: string @index(term) . 
-
-"""
+    """
+    op = pydgraph.Operation(schema=schema)
+    client.alter(op)
