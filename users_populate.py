@@ -56,7 +56,7 @@ def populate_users(session_cass, session_mongo, users):
 
 
 def main():
-    file_path = "./cassandra_data.json"
+    file_path = "./populate_data/cassandra_data.json"
     data = read_data_from_json(file_path)
 
     administrators = data["administrators"]
