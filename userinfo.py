@@ -1,6 +1,7 @@
 from typing import Tuple, List
 from models.mongo_schema import Game, Category
 import uuid
+import connections
 
 def get_most_played_stats(session, account_id: uuid.UUID):
     """
@@ -79,8 +80,8 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     ]
 
     # Ejecutar agregaciones
-    games_result = list(session.database.users_info.aggregate(most_played_games_pipeline))
-    categories_result = list(session.database.users_info.aggregate(most_played_categories_pipeline))
+    games_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_games_pipeline))
+    categories_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_categories_pipeline))
 
     # Convertir resultados a objetos Pydantic
     games = [Game(**game) for game in games_result]
