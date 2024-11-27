@@ -52,7 +52,9 @@ def user_menu(session_mongo, account):
 
     # Llamar a la función get_most_played_stats
     mpg, mpc = userinfo.get_most_played_stats(session_mongo, account_id)
-    #cat(mpc)
+    print(mpg)
+    print(mpc)
+    print(userinfo.cat(mpc))
 
 
 def register_menu():

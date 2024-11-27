@@ -1,5 +1,6 @@
 from typing import Tuple, List
 from models.mongo_schema import Game, Category
+from queries import mongo_queries
 import uuid
 import connections
 import bson
