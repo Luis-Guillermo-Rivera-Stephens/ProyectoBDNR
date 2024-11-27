@@ -2,6 +2,7 @@ from typing import Tuple, List
 from models.mongo_schema import Game, Category
 import uuid
 import connections
+import bson
 
 def get_most_played_stats(session, account_id: uuid.UUID):
     """
@@ -19,7 +20,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     most_played_games_pipeline = [
         {
             "$match": {
-                "userID": account_id
+                "userID": bson.Binary.from_uuid(account_id)
             }
         },
         {
@@ -52,7 +53,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     most_played_categories_pipeline = [
         {
             "$match": {
-                "userID": account_id
+                "userID": bson.Binary.from_uuid(account_id)
             }
         },
         {

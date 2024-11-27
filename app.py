@@ -1,6 +1,9 @@
 import login 
 import register 
 import connections
+import userinfo
+import uuid
+
 def print_menu():
     print("1. Login")
     print("2. Register")
@@ -22,10 +25,11 @@ def login_menu():
         print(msg)
         return None
     
+    print(account.account_id)
     if admin:
         admin_menu()
     else:
-        user_menu(account)
+        user_menu(connections.Mongo_client, account)
 
 
 def admin_menu():
@@ -35,12 +39,21 @@ def admin_menu():
         print("admin options")
         input("enter option")
 
-def user_menu(account):
-    print("="*50)
+def user_menu(session_mongo, account):
+    print("=" * 50)
     print(f"Welcome {account.username}!")
-    while True:
-        print("user options")
-        input("enter option")
+
+    # Asegurarse de que el identificador del usuario esté presente
+    account_id = getattr(account, "account_id", None)
+
+    if not account_id:
+        print("Error: No se encontró el identificador del usuario.")
+        return
+
+    # Llamar a la función get_most_played_stats
+    mpg, mpc = userinfo.get_most_played_stats(session_mongo, account_id)
+    #cat(mpc)
+
 
 def register_menu():
     print("="*50)
@@ -60,7 +73,7 @@ def register_menu():
         if result is None: 
             return 
 
-        user_menu(result)
+        user_menu(connections.Mongo_client, result)
 
     elif choice == 2:
         charge = input("Enter charge: ")
