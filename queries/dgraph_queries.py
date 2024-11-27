@@ -5,23 +5,30 @@ from models import dgraph_model
 stub = DgraphClientStub('localhost:9080')
 client = DgraphClient(stub)
 
-# Consulta: Obtener juegos de una categoría específica
-def get_games_by_category(category_id):
-    query = f"""
-    {{
-        games(func: eq(Categoria._id, "{category_id}")) {{
-            _id
-            name
+# Consulta: Obtener juegos random
+def jos_random(client):
+    query = """
+    {
+        jos(func: has(j_name)) {
+            j_name
             description
-            related_with {{
-                _id
-                name
-            }}
-        }}
-    }}
+            category {
+                c_name
+            }
+            related_with {
+                j_name
+            }
+        }
+    }
     """
+    
     res = client.txn(read_only=True).query(query)
-    return res.json
+
+    data = res.json()
+
+    games = data.get('jos', [])
+    
+    return games
 
 # Consulta: Buscar juegos por nombre (coincidencias parciales y exactas)
 def get_games_by_name(name):

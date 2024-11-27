@@ -17,7 +17,7 @@ def set_schema(client):
     # Juego Properties
     j_name: string @index(term) .
     description: string .
-    category: uid .              # Relación con un Categoria (uid)
+    category: uid @reverse .              # Relación con un Categoria (uid)
     related_with: [uid] .        # Lista de relaciones con otros Juegos (uid)
 
     # Categoria Properties
