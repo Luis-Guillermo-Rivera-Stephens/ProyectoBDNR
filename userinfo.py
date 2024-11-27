@@ -68,7 +68,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
             }
         },
         {
-            "$limit": 3
+            "$limit": 2
         },
         {
             "$project": {
