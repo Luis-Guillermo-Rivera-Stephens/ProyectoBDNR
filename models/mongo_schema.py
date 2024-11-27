@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, List, Union
 import uuid
+import bson 
 
 class Game(BaseModel):
     gameID: str = Field(..., alias="_gameID")  
@@ -13,7 +14,8 @@ class Category(BaseModel):
     time_playing: int
 
 class UserInfo(BaseModel):
-    userID: uuid.UUID = Field(...)
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    userID: Union[uuid.UUID, bson.Binary] = Field(...)
     TimePlaying: int = Field(...)
     Games: List[Game] = []
     Categories: List[Category] = []
