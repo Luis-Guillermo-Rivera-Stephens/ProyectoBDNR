@@ -23,12 +23,7 @@ def jos_random(client):
     """
     
     res = client.txn(read_only=True).query(query)
-
-    data = res.json()
-
-    games = data.get('jos', [])
-    
-    return games
+    return res.json
 
 # Consulta: Buscar juegos por nombre (coincidencias parciales y exactas)
 def get_games_by_name(name):
