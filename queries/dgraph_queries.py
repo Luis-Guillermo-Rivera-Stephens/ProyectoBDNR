@@ -1,11 +1,34 @@
-from pydgraph import DgraphClient, DgraphClientStub
-from models import dgraph_model  
+#!/usr/bin/env python3
+import os
+import json
+import random
+import pydgraph
 
-# Conexión a Dgraph
-stub = DgraphClientStub('localhost:9080')
-client = DgraphClient(stub)
+DGRAPH_URI = os.getenv('DGRAPH_URI', 'localhost:9080')
 
-# Consulta: Obtener juegos random
+
+def print_menu():
+    mm_options = {
+        1: "Get random games",
+        2: "Get games by category (Tragamonedas)",
+        3: "Exit"
+    }
+    for key in mm_options.keys():
+        print(key, '--', mm_options[key])
+
+
+def create_client_stub():
+    return pydgraph.DgraphClientStub(DGRAPH_URI)
+
+
+def create_client(client_stub):
+    return pydgraph.DgraphClient(client_stub)
+
+
+def close_client_stub(client_stub):
+    client_stub.close()
+
+
 def jos_random(client):
     query = """
     {
@@ -15,113 +38,83 @@ def jos_random(client):
             category {
                 c_name
             }
-            related_with {
-                j_name
-            }
         }
     }
     """
-    
-    res = client.txn(read_only=True).query(query)
-    return res.json
+    txn = client.txn()
+    try:
+        res = txn.query(query)
+        # Convertir la respuesta JSON a un objeto de Python
+        games = json.loads(res.json).get('jos', [])
+        
+        # Si hay menos de 6 juegos, devolver todos
+        if len(games) <= 6:
+            return games
+        
+        # Seleccionar 6 juegos aleatorios
+        random_games = random.sample(games, 6)
+        return random_games
 
-# Consulta: Buscar juegos por nombre (coincidencias parciales y exactas)
-def get_games_by_name(name):
-    query = f"""
-    {{
-        games(func: anyofterms(name, "{name}")) {{
-            _id
-            name
-            description
-            category {{
-                _id
-                name
-            }}
-        }}
-    }}
+    finally:
+        txn.discard()
+
+
+def memardo(client):
+    query = """
+    {
+    var(func: allofterms(c_name, "Tragamonedas")) {
+        uid_cat as uid
+    }
+
+    games_by_cat(func: uid(uid_cat)) {
+        c_name
+        ~category {
+        uid
+        j_name
+        description
+        }
+    }
+    }
     """
-    res = client.txn(read_only=True).query(query)
-    return res.json
+    txn = client.txn()
+    try:
+        res = txn.query(query)
+        return json.loads(res.json).get('games_by_cat', [])  # Devuelve la lista de juegos filtrados
+    finally:
+        txn.discard()
 
-# Consulta: Sugerir juegos basados en juegos jugados previamente
-def get_suggested_games(user_played_game_ids):
-    ids_str = ", ".join(f'"{id}"' for id in user_played_game_ids)
-    query = f"""
-    {{
-        games(func: uid({ids_str})) {{
-            related_with @filter(not uid({ids_str})) {{
-                _id
-                name
-                description
-            }}
-        }}
-    }}
-    """
-    res = client.txn(read_only=True).query(query)
-    return res.json
 
-# Consulta: Obtener juegos más populares (basado en un contador de juegos)
-def get_most_popular_games(limit=10):
-    query = f"""
-    {{
-        popular_games(func: has(name), orderdesc: played_counter, first: {limit}) {{
-            _id
-            name
-            description
-            played_counter
-        }}
-    }}
-    """
-    res = client.txn(read_only=True).query(query)
-    return res.json
+def main():
+    client_stub = create_client_stub()
+    client = create_client(client_stub)
 
-# Consulta: Juegos de la categoría favorita del usuario
-def get_favorite_category_games(user_category_id):
-    query = f"""
-    {{
-        favorite_games(func: eq(Categoria._id, "{user_category_id}")) {{
-            _id
-            name
-            description
-        }}
-    }}
-    """
-    res = client.txn(read_only=True).query(query)
-    return res.json
+    while True:
+        print_menu()
+        option = int(input('Enter your option: '))
 
-# Consulta: Obtener juegos relacionados con un juego específico
-def get_related_games(game_id):
-    query = f"""
-    {{
-        game(func: eq(Juego._id, "{game_id}")) {{
-            related_with {{
-                _id
-                name
-                description
-            }}
-        }}
-    }}
-    """
-    res = client.txn(read_only=True).query(query)
-    return res.json
+        if option == 1:
+            # Obtener juegos aleatorios
+            try:
+                games = jos_random(client)
+                print(json.dumps(games, indent=2))  # Mostrar los juegos aleatorios
+            except Exception as e:
+                print(f"Error retrieving games: {e}")
+        elif option == 2:
+            # Obtener juegos por categoría "Tragamonedas"
+            try:
+                games_by_category = memardo(client)
+                print(json.dumps(games_by_category, indent=2))  # Mostrar los juegos por categoría
+            except Exception as e:
+                print(f"Error retrieving games by category: {e}")
+        elif option == 3:
+            close_client_stub(client_stub)
+            exit(0)
+        else:
+            print("Invalid option, please try again.")
 
-# Consulta: Obtener categorías de juegos con la mayor actividad del usuario
-def get_top_categories(user_id):
-    query = f"""
-    {{
-        user(func: eq(User._id, "{user_id}")) {{
-            categories_played @filter(gt(time_playing, 0)) (orderdesc: time_playing) {{
-                category {{
-                    name
-                }}
-                time_playing
-            }}
-        }}
-    }}
-    """
-    res = client.txn(read_only=True).query(query)
-    return res.json
 
-# Cerrar conexión al terminar
-def close_connection():
-    stub.close()
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        print(f'Error: {e}')
