@@ -1,6 +1,6 @@
 from typing import Tuple, List
 from models.mongo_schema import Game, Category
-from queries import mongo_queries
+from queries import dgraph_queries
 import uuid
 import connections
 import bson
@@ -91,7 +91,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
 
     return games, categories
 
-def cat(categories: List[Category]):
+def cat(session_dgraph, categories):
     """
     Evalúa la cantidad de categorías más jugadas y realiza acciones basadas en la cantidad.
 
@@ -103,11 +103,33 @@ def cat(categories: List[Category]):
     """
     category_count = len(categories)
 
+    recomendados = []
+    print("Categorias: ", category_count)
     if category_count == 0:
-        return "No se encontraron categorías más jugadas."
+        result = dgraph_queries.all_games(session_dgraph, recomendados, 12)
+        return result
     elif category_count == 1:
-        return f"Se encontró una categoría más jugada: {categories[0].category}."
+        cat1 = categories[0].category
+        result_by_category = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
+        result = dgraph_queries.all_games(session_dgraph, result_by_category, 6)
+        return result
     elif category_count == 2:
-        return f"Se encontraron dos categorías más jugadas: {categories[0].category} y {categories[1].category}."
-    else:
-        return print("Mala introduccion")
+        cat1 = categories[0].category
+        cat2 = categories[1].category
+        result_by_category1 = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
+        result_by_category2 = dgraph_queries.games_by_cat(session_dgraph, cat2, 3)
+        result_by_categories = result_by_category1 + result_by_category2
+        result = dgraph_queries.all_games(session_dgraph, result_by_categories, 3)
+        return result
+
+    
+def format_games(games):
+    for i in range(len(games)):
+        game = games[i]
+        print("="*50)
+        print("Opcion:", i+1)
+        print("Game: "+game["j_name"])
+        print("Description: "+game["description"])
+        print("Category: "+game["category"]["c_name"])
+        print("="*50)
+

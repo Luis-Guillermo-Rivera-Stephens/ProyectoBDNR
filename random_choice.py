@@ -9,3 +9,4 @@ def random_games(recommendations, games, n):
             games.remove(game)  
             count += 1
     return recommendations
+

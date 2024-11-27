@@ -2,6 +2,7 @@ from typing import Optional
 from models.mongo_schema import Game, Category, UserInfo
 import uuid
 from connections import MONGODB_COLLECTION_NAME
+import bson
 
 def update_stats(
     session,
@@ -9,22 +10,37 @@ def update_stats(
     game_id,
     game_category,
     time_played,
-    played_counter = 1):
+    played_counter=1
+):
     try:
-        user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": user_id})
+        print("Updating stats")
+        # Verificar y convertir user_id y game_id a uuid.UUID si es necesario
+        if not isinstance(user_id, uuid.UUID):
+            user_id = uuid.UUID(user_id)
+
+        # Convertir UUIDs a bson.Binary
+        user_id_binary = bson.Binary.from_uuid(user_id)
+
+        get_mongo_data(session, user_id_binary)
+        # Buscar datos del usuario
+        user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": user_id_binary})
+        print("User data: ", user_data)
         if not user_data:
             return False
-        
+        print(user_data)
+
+        # Inicializar datos del usuario
         user = UserInfo(
             userID=user_data["userID"],
             TimePlaying=user_data["TimePlaying"],
-            Games=user_data.get("Games", []), 
+            Games=user_data.get("Games", []),
             Categories=user_data.get("Categories", [])
         )
-        
-        
+
+        # Actualizar tiempo de juego
         user.TimePlaying += time_played
-        
+
+        # Actualizar o agregar juego
         game_found = False
         for game in user.Games:
             if game.gameID == game_id:
@@ -32,7 +48,7 @@ def update_stats(
                 game.played_counter += played_counter
                 game_found = True
                 break
-                
+
         if not game_found:
             new_game = Game(
                 _gameID=game_id,
@@ -41,32 +57,41 @@ def update_stats(
                 category=game_category
             )
             user.Games.append(new_game)
-            
+
+        # Actualizar o agregar categoría
         category_found = False
         for cat in user.Categories:
             if cat.category == game_category:
                 cat.time_playing += time_played
                 category_found = True
                 break
-                
+
         if not category_found:
             new_category = Category(
                 category=game_category,
                 time_playing=time_played
             )
             user.Categories.append(new_category)
-            
+
+        # Actualizar en MongoDB
         session.database[MONGODB_COLLECTION_NAME].update_one(
-            {"userID": user_id},
+            {"userID": user_id_binary},
             {"$set": {
                 "TimePlaying": user.TimePlaying,
                 "Games": [game.dict(by_alias=True) for game in user.Games],
                 "Categories": [cat.dict() for cat in user.Categories]
             }}
         )
-        
+
+        print("User updated")
         return True
-        
+
     except Exception as e:
         print(f"Error updating user stats: {str(e)}")
         return False
+
+
+def get_mongo_data(session, account_id_binary):
+    print("Getting Mongo stats...")
+    user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": account_id_binary})
+    print(user_data)

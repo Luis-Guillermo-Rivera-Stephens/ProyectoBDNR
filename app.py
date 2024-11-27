@@ -3,6 +3,7 @@ import register
 import connections
 import userinfo
 import uuid
+import playing
 
 def print_menu():
     print("1. Login")
@@ -51,10 +52,18 @@ def user_menu(session_mongo, account):
         return
 
     # Llamar a la función get_most_played_stats
-    mpg, mpc = userinfo.get_most_played_stats(session_mongo, account_id)
-    print(mpg)
-    print(mpc)
-    print(userinfo.cat(mpc))
+    while True:
+        mpg, mpc = userinfo.get_most_played_stats(session_mongo, account_id)
+        print(mpg)
+        print(mpc)
+        games = userinfo.cat(connections.Dgraph_client, mpc)
+        userinfo.format_games(games)
+        choice = int(input("Elige el juego con el numero o 0 para salir de tu sesion"))
+        if choice == 0:
+            break
+        game = games[choice-1]
+        playing.playing(session_mongo, account_id, game["uid"], game["category"]["c_name"])
+
 
 
 def register_menu():
