@@ -15,19 +15,11 @@ def update_stats(
     try:
         print("Updating stats")
         # Verificar y convertir user_id y game_id a uuid.UUID si es necesario
-        if not isinstance(user_id, uuid.UUID):
-            user_id = uuid.UUID(user_id)
+        user_id_binary = str(user_id)
 
-        # Convertir UUIDs a bson.Binary
-        user_id_binary = bson.Binary.from_uuid(user_id)
-
-        get_mongo_data(session, user_id_binary)
-        # Buscar datos del usuario
-        user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": user_id_binary})
-        print("User data: ", user_data)
+        user_data = get_mongo_data(session, user_id_binary)
         if not user_data:
-            return False
-        print(user_data)
+            return
 
         # Inicializar datos del usuario
         user = UserInfo(
@@ -92,6 +84,14 @@ def update_stats(
 
 
 def get_mongo_data(session, account_id_binary):
-    print("Getting Mongo stats...")
-    user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": account_id_binary})
-    print(user_data)
+    try:
+        # Buscar al usuario en la colección
+        user_data = session.database[MONGODB_COLLECTION_NAME].find_one({"userID": account_id_binary})
+        if not user_data:
+            print(f"No se encontró usuario con userID: {account_id_binary}")
+            return None
+        print("Usuario encontrado:", user_data)
+        return user_data
+    except Exception as e:
+        print(f"Error al obtener datos de MongoDB: {str(e)}")
+        return None

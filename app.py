@@ -58,7 +58,7 @@ def user_menu(session_mongo, account):
         print(mpc)
         games = userinfo.cat(connections.Dgraph_client, mpc)
         userinfo.format_games(games)
-        choice = int(input("Elige el juego con el numero o 0 para salir de tu sesion"))
+        choice = int(input("Elige el juego con el numero o 0 para salir de tu sesion: "))
         if choice == 0:
             break
         game = games[choice-1]

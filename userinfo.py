@@ -6,22 +6,10 @@ import connections
 import bson
 
 def get_most_played_stats(session, account_id: uuid.UUID):
-    """
-    Obtiene los juegos más jugados y categorías más jugadas para un usuario
-    
-    Args:
-        session: Sesión de MongoDB
-        account_id: UUID del usuario
-    
-    Returns:
-        Tuple con lista de juegos y lista de categorías más jugados para ese usuario
-    """
-    
-    # Agregación para obtener los 3 juegos más jugados
     most_played_games_pipeline = [
         {
             "$match": {
-                "userID": bson.Binary.from_uuid(account_id)
+                "userID": str(account_id)
             }
         },
         {
@@ -54,7 +42,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     most_played_categories_pipeline = [
         {
             "$match": {
-                "userID": bson.Binary.from_uuid(account_id)
+                "userID": str(account_id)
             }
         },
         {
@@ -92,15 +80,6 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     return games, categories
 
 def cat(session_dgraph, categories):
-    """
-    Evalúa la cantidad de categorías más jugadas y realiza acciones basadas en la cantidad.
-
-    Args:
-        categories: Lista de categorías más jugadas.
-
-    Returns:
-        Mensaje indicando el caso correspondiente.
-    """
     category_count = len(categories)
 
     recomendados = []

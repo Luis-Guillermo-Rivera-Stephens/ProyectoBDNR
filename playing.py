@@ -1,6 +1,7 @@
 import datetime
 from queries import mongo_queries
 
+
 def playing(mongo_session, id_account, game_id, category):
     start_time = datetime.datetime.now()
     print("Jugando ...")

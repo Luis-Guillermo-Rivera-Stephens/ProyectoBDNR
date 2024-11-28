@@ -9,7 +9,7 @@ import log_creation
 import bson
 def mongo_creation(session ,user_id):
     newuser = mongo_schema.UserInfo(
-        userID=bson.Binary.from_uuid(user_id),
+        userID=user_id,
         TimePlaying=0,
         Games=[],
         Categories=[]
@@ -40,7 +40,7 @@ def register_user(session, mongo_session, username, password):
     except Exception as e:
         return None, f"Error registering user: {e}"
     
-    mongo_creation(mongo_session, account_id)
+    mongo_creation(mongo_session, str(account_id))
     log_creation.log_creation(session, account_id,  uuid.UUID("00000000-0000-0000-0000-000000000000"), "Usuario creado", creation_date, creation_date)
 
 

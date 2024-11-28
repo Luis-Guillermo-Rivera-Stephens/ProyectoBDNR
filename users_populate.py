@@ -12,12 +12,12 @@ def read_data_from_json(file_path):
 
 def mongo_creation(session ,user_id):
     newuser = mongo_schema.UserInfo(
-    userID=user_id,  
+    userID= str(user_id),  
     TimePlaying=0,   
     Games=[],
     Categories=[])
     newuser_dict = newuser.dict(by_alias=True)
-    newuser_dict['userID'] = Binary.from_uuid(user_id)
+    newuser_dict['userID'] = str(user_id)
 
     # Insertar en MongoDB
     session.database[connections.MONGODB_COLLECTION_NAME].insert_one(newuser_dict)

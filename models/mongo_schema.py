@@ -15,7 +15,7 @@ class Category(BaseModel):
 
 class UserInfo(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    userID: Union[uuid.UUID, bson.Binary] = Field(...)
+    userID: Union[uuid.UUID, str] = Field(...)
     TimePlaying: int = Field(...)
     Games: List[Game] = []
     Categories: List[Category] = []
