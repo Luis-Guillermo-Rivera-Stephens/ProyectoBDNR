@@ -112,9 +112,12 @@ def cat(session_dgraph, categories):
         print(cat2)
 
         result_by_category1 = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
+        print(len(result_by_category1))
         result_by_category2 = dgraph_queries.games_by_cat(session_dgraph, cat2, 3)
+        print(len(result_by_category2))
         result_by_categories = result_by_category1 + result_by_category2
         result = dgraph_queries.all_games(session_dgraph, result_by_categories, 3)
+        print(len(result))
         return result
 
     

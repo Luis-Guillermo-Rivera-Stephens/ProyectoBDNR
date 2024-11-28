@@ -43,7 +43,7 @@ def update_stats(
 
         if not game_found:
             new_game = Game(
-                _gameID=game_id,
+                gameID=game_id,
                 played_counter=played_counter,
                 time_playing=time_played,
                 category=game_category
