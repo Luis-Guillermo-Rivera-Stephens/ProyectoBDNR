@@ -28,26 +28,33 @@ def all_games(client, recomendations, n):
         txn.discard()
 
 
-def games_by_cat(client,category_name, n):
-    query = """
-    {
-    var(func: allofterms(c_name, "{}")) {
+def games_by_cat(client, category_name, n):
+    query = """{{
+    var(func: allofterms(c_name, "{0}")) {{
         uid_cat as uid
-    }
+    }}
 
-    games_by_cat(func: uid(uid_cat), first:{}) {
+    games_by_cat(func: uid(uid_cat), first: {1}) {{
         c_name
-        ~category {
-        uid
-        j_name
-        description
-        }
-    }
-    }
-    """
+        ~category {{
+            uid
+            j_name
+            description
+            category {{
+                c_name
+            }}
+        }}
+    }}
+    }}"""
     txn = client.txn()
     try:
         res = txn.query(query.format(category_name, n))
-        return json.loads(res.json).get('games_by_cat', []) 
+        result = json.loads(res.json).get('games_by_cat', [])
+        # Flatten the structure to match all_games format
+        flattened_games = []
+        for category in result:
+            for game in category.get('~category', []):
+                flattened_games.append(game)
+        return flattened_games
     finally:
         txn.discard()

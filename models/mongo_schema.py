@@ -4,7 +4,7 @@ import uuid
 import bson 
 
 class Game(BaseModel):
-    gameID: str = Field(..., alias="_gameID")  
+    gameID: str  
     played_counter: int
     time_playing: int
     category: str

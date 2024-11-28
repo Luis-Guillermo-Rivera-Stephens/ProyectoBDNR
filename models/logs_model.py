@@ -12,8 +12,8 @@ import datetime
 """
 
 class LOG(BaseModel):
-    account_id: uuid.UUID = Field(default_factory=uuid.uuid4, alias="_account_id")
-    game_id: uuid.UUID = Optional[uuid.UUID]
+    account_id: str = Field(default_factory=uuid.uuid4, alias="_account_id")
+    game_id: str = Optional[str]
     description: str = Field(...)
     start: datetime.datetime = Field(...)
     end: datetime.datetime = Field(...)

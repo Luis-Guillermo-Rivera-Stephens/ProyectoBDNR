@@ -13,7 +13,7 @@ def log_creation(session, id_account, game_id, description, start_date, end_date
         session.execute(query, (id_account, game_id, description, start_date, end_date))
 
 def verif_info(id_account, game_id, description, start_date, end_date):
-    if not isinstance(id_account, uuid.UUID) and not isinstance(game_id, uuid.UUID):
+    if not len(id_account) == 0 and not len(game_id) == 0:
         return False
     if len(description) == 0:
         return False

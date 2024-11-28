@@ -11,7 +11,7 @@ import datetime
 """
 
 class ACCOUNT(BaseModel):
-    account_id: uuid.UUID = Field(default_factory=uuid.uuid4, alias="_account_id")
+    account_id: str = Field(...)
     username: str = Field(...)
     password: str = Field(...)
     creation_date: datetime.datetime = Field(...)

@@ -30,7 +30,7 @@ def get_most_played_stats(session, account_id: uuid.UUID):
         },
         {
             "$project": {
-                "_gameID": "$game.gameID",
+                "gameID": "$game.gameID",
                 "played_counter": "$game.played_counter",
                 "time_playing": "$game.time_playing",
                 "category": "$game.category"
@@ -69,13 +69,25 @@ def get_most_played_stats(session, account_id: uuid.UUID):
         }
     ]
 
-    # Ejecutar agregaciones
     games_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_games_pipeline))
     categories_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_categories_pipeline))
 
+    print(games_result)
+    print(categories_result)
+
     # Convertir resultados a objetos Pydantic
-    games = [Game(**game) for game in games_result]
-    categories = [Category(**category) for category in categories_result]
+    games = []
+    categories = []
+    for game in games_result:
+        new_game = Game(gameID=game["gameID"], 
+                        played_counter=game["played_counter"], 
+                        time_playing=game["time_playing"],
+                        category=game["category"])
+        games.append(new_game)
+    
+    for category in categories_result:
+        new_category = Category(category=category["category"], time_playing=category["time_playing"])
+        categories.append(new_category)
 
     return games, categories
 
@@ -89,12 +101,16 @@ def cat(session_dgraph, categories):
         return result
     elif category_count == 1:
         cat1 = categories[0].category
+        print(cat1)
         result_by_category = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
         result = dgraph_queries.all_games(session_dgraph, result_by_category, 6)
         return result
     elif category_count == 2:
         cat1 = categories[0].category
+        print(cat1)
         cat2 = categories[1].category
+        print(cat2)
+
         result_by_category1 = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
         result_by_category2 = dgraph_queries.games_by_cat(session_dgraph, cat2, 3)
         result_by_categories = result_by_category1 + result_by_category2

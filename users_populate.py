@@ -12,7 +12,7 @@ def read_data_from_json(file_path):
 
 def mongo_creation(session ,user_id):
     newuser = mongo_schema.UserInfo(
-    userID= str(user_id),  
+    userID= user_id,  
     TimePlaying=0,   
     Games=[],
     Categories=[])
@@ -26,7 +26,7 @@ def mongo_creation(session ,user_id):
 def populate_administrators(session, administrators):
     query = session.prepare(cassandra_queries.CASSANDRA_REGISTER_ADMIN_QUERY)
     for admin in administrators:
-        admin_id = uuid.uuid4()
+        admin_id = str(uuid.uuid4())
         username = admin["username"]
         password = admin["password"]
         key = admin["key"]
@@ -42,7 +42,7 @@ def populate_administrators(session, administrators):
 
 def create_log(session, account_id):
     log_time = datetime.datetime.now()
-    default_game_id = uuid.UUID("00000000-0000-0000-0000-000000000000")
+    default_game_id = str(uuid.UUID("00000000-0000-0000-0000-000000000000"))
     for tablename in cassandra_queries.CASSANDRA_LOG_TABLES_NAME:
         query = session.prepare(cassandra_queries.CASSANDRA_LOG_QUERY.format(tablename))
         session.execute(query, (account_id, default_game_id, "User created", log_time, log_time))
@@ -52,7 +52,7 @@ def populate_users(session_cass, session_mongo, users):
     query1 =  session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_ACCOUNT_QUERY)
     query2 = session_cass.prepare(cassandra_queries.CASSANDRA_REGISTER_ACCOUNT_ID_QUERY)
     for user in users:
-        account_id = uuid.uuid4()
+        account_id = str(uuid.uuid4())
         username = user["username"]
         password = user["password"]
         creation_date = datetime.datetime.now()

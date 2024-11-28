@@ -7,7 +7,7 @@ CREATE_KEYSPACE = """
 
 ACCOUNTS_BY_USER_TABLE = """
         CREATE TABLE IF NOT EXISTS ACCOUNTS_BY_USER (
-                account_id UUID,
+                account_id TEXT,
                 username TEXT,
                 password TEXT,
                 creation_date TIMESTAMP,
@@ -16,7 +16,7 @@ ACCOUNTS_BY_USER_TABLE = """
 """
 ACCOUNTS_BY_ID_TABLE = """
         CREATE TABLE IF NOT EXISTS ACCOUNTS_BY_ID (
-                account_id UUID,
+                account_id TEXT,
                 username TEXT,
                 password TEXT,
                 creation_date TIMESTAMP,
@@ -26,7 +26,7 @@ ACCOUNTS_BY_ID_TABLE = """
 
 ADMINISTRATOR_TABLE = """
         CREATE TABLE IF NOT EXISTS ADMINISTRATOR_BY_USER (
-                admin_id UUID,
+                admin_id TEXT,
                 username TEXT,
                 password TEXT,
                 key text,
@@ -38,7 +38,7 @@ ADMINISTRATOR_TABLE = """
 
 USERNAMES = """
         CREATE TABLE IF NOT EXISTS USERNAMES (
-                id UUID,
+                id TEXT,
                 username TEXT,
                 admin BOOLEAN,
                 PRIMARY KEY (username)
@@ -47,8 +47,8 @@ USERNAMES = """
 
 LOGS_BY_USER = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_USER (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
@@ -58,8 +58,8 @@ LOGS_BY_USER = """
 
 LOGS_BY_USER_DATERANGE = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_USER_DATERANGE (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
@@ -69,8 +69,8 @@ LOGS_BY_USER_DATERANGE = """
 
 LOGS_BY_USER_GAME = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
@@ -80,8 +80,8 @@ LOGS_BY_USER_GAME = """
 
 LOGS_BY_USER_GAME_DATERANGE = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_USER_GAME_DATERANGE (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
@@ -91,8 +91,8 @@ LOGS_BY_USER_GAME_DATERANGE = """
 
 LOGS_BY_GAME = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_GAME (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
@@ -102,8 +102,8 @@ LOGS_BY_GAME = """
 
 LOGS_BY_GAME_DATERANGE = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_GAME_DATERANGE (
-                account_id UUID,
-                game_id UUID,
+                account_id TEXT,
+                game_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,

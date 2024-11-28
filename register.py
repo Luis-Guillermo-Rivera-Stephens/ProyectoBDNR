@@ -24,7 +24,7 @@ def register_user(session, mongo_session, username, password):
         if flag:
             return None, f"Username {usernameRes.username} is already registered"
         
-        account_id = uuid.uuid4()
+        account_id = str(uuid.uuid4())
         creation_date = datetime.now()
 
 
@@ -40,8 +40,8 @@ def register_user(session, mongo_session, username, password):
     except Exception as e:
         return None, f"Error registering user: {e}"
     
-    mongo_creation(mongo_session, str(account_id))
-    log_creation.log_creation(session, account_id,  uuid.UUID("00000000-0000-0000-0000-000000000000"), "Usuario creado", creation_date, creation_date)
+    mongo_creation(mongo_session, account_id)
+    log_creation.log_creation(session, account_id,  str(uuid.UUID("00000000-0000-0000-0000-000000000000")), "Usuario creado", creation_date, creation_date)
 
 
     return True, f"User {username} registered"
@@ -55,7 +55,7 @@ def register_admin(session, username, password, charge):
         if flag:
             return None, f"Username {usernameRes.username} is already registered"
     
-        admin_id = uuid.uuid4()
+        admin_id = str(uuid.uuid4())
         creation_date = datetime.now(timezone.utc)
 
         query1 = session.prepare(CASSANDRA_REGISTER_ADMIN_QUERY)

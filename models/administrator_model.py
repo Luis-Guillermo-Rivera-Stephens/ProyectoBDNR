@@ -13,7 +13,7 @@ charge TEXT,
 """
 
 class ADMIN(BaseModel):
-    admin_id: uuid.UUID = Field(default_factory=uuid.uuid4, alias="_admin_id")
+    admin_id: str = Field(...)
     username: str = Field(...)
     password: str = Field(...)
     key: str = Field(...)
