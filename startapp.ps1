@@ -1,4 +1,4 @@
-Write-Host "Asegurate de "
+Write-Host "Asegurate de"
 $flag = Read-Host "Quieres crear los contenedores?? 1: Si, else: No"
 
 $mongo_name = "mongo_"

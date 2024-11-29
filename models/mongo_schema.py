@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Union
 import uuid
-import bson 
+from connections import Mongo_collection
 
 class Game(BaseModel):
     gameID: str  
@@ -19,3 +19,5 @@ class UserInfo(BaseModel):
     TimePlaying: int = Field(...)
     Games: List[Game] = []
     Categories: List[Category] = []
+
+Mongo_collection.create_index("userID", unique=True)
