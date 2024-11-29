@@ -1,9 +1,11 @@
+from admininfo import get_logs_by_game, get_logs_by_user
 import login 
 import register 
 import connections
 import userinfo
 import uuid
 import playing
+
 
 def print_menu():
     print("1. Login")
@@ -26,7 +28,7 @@ def login_menu():
         print(msg)
         return None
     
-    print(account.account_id)
+    print(account.admin_id)
     if admin:
         admin_menu()
     else:
@@ -37,8 +39,25 @@ def admin_menu():
     print("="*50)
     print("Welcome, admin!")
     while True:
-        print("admin options")
-        input("enter option")
+        print("1. View logs by user")
+        print("2. View logs by game")
+        print("3. Exit")
+        choice = input("Enter option: ")
+        
+        if choice == "1":
+            account_id = input("Enter account ID: ")
+            logs = get_logs_by_user(connections.Cassandra_session, account_id)
+            for log in logs:
+                print(log)
+        
+        elif choice == "2":
+            game_id = input("Enter game ID: ")
+            logs = get_logs_by_game(connections.Cassandra_session, game_id)
+            for log in logs:
+                print(log)
+        
+        elif choice == "3":
+            break
 
 def user_menu(session_mongo, account):
     print("=" * 50)
