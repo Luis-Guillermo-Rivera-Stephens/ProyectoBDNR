@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List, Union
+from typing import List, Union
 import uuid
 from connections import Mongo_collection
 
