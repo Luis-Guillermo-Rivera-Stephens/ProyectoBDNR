@@ -1,63 +1,102 @@
-from queries.cassandra_queries import (
-    CASSANDRA_LOG_QUERY,
-    CASSANDRA_LOG_TABLES_NAME,
-)
+import queries.cassandra_queries as q
+import queries.dgraph_queries as d
+import connections
+import models.logs_model as LOG
 
-def get_logs_by_user(session, account_id):
-    if not account_id:
-        raise ValueError("Error: account_id no proporcionado o no válido.")
+import datetime
+
+def get_logs_by_user(session = connections.Cassandra_session):
+    print("get_logs_by_user")
+    account_id = get_user_account(session)
+    flag = input("Quieres filtrar por juego? (y/n): ")
+    flag = flag.lower() == "y" 
+
+    if flag:
+        game_id = get_game_id()
+        query = q.LOG_BY_USER_GAME_QUERY
+    else:
+        query = q.LOG_BY_USER_QUERY
+
+    date_flag = input("Quieres establecer un rango de fechas (y/n): ")
+    date_flag = date_flag.lower() == "y" 
+    if date_flag:
+        start, end = stablish_a_daterange()
+        query = query+q.DATE_RANGE
+
+    query = session.prepare(query)
+    if flag and date_flag:
+        result = session.execute(query, (account_id, game_id, start, end))
+    elif flag and not date_flag:
+        result = session.execute(query, (account_id, game_id))
+    elif not flag and date_flag:
+        result = session.execute(query, (account_id, start, end))
+    else:
+        result = session.execute(query, (account_id,))
+    format_logs(result)
+
+def get_logs_by_game(session):
+    game_id = get_game_id()
+    query = q.LOG_BY_GAME_QUERY
+    date_flag = input("Quieres establecer un rango de fechas (y/n): ")
+    date_flag = date_flag.lower() == "y" 
+    if date_flag:
+        start, end = stablish_a_daterange()
+        query = query+q.DATE_RANGE
+    query = session.prepare(query)
+    if date_flag:
+        result = session.execute(query, (game_id, start, end))
+    else:
+        result = session.execute(query, (game_id,))
+    format_logs(result)
     
-    print(f"Consultando logs para account_id: {account_id}")
 
-    logs = []
-    for table in CASSANDRA_LOG_TABLES_NAME:
-        try:
-            if "GAME" in table and "DATERANGE" not in table:
-                # Tablas que requieren game_id
-                print(f"Saltando tabla {table} porque falta game_id.")
-                continue
-            if "DATERANGE" in table:
-                # Tablas que requieren rango de fechas
-                print(f"Saltando tabla {table} porque falta rango de fechas.")
-                continue
-            
-            print(f"Ejecutando consulta en tabla: {table} con account_id: {account_id}")
-            query = session.prepare(CASSANDRA_LOG_QUERY.format(table))
-            result = session.execute(query, (account_id,))
-            logs.extend(result)
-        except Exception as e:
-            print(f"Error al ejecutar la consulta en tabla {table}: {e}")
-            continue
+
+def get_user_account(session):
+    print("Consultando todos los usuarios")
+    result = session.execute(q.CASSANDRA_GET_ALL_ACCOUNTS)
     
-    return logs
-
-
-def get_logs_by_game(session, game_id):
-    if not game_id:
-        raise ValueError("Error: game_id no proporcionado o no válido.")
+    print("\nUsuarios disponibles:")
+    print("=" * 50)
+    for row in result:
+        print(f"ID: {row.account_id}")
+        print(f"Usuario: {row.username}")
+        print("-" * 50)
     
-    print(f"Consultando logs para game_id: {game_id}")
+    return input("Enter the id: ")
 
-    logs = []
-    for table in CASSANDRA_LOG_TABLES_NAME:
-        try:
-            if "USER" in table and "DATERANGE" not in table:
-                # Tablas que requieren account_id, no game_id
-                print(f"Saltando tabla {table} porque falta account_id.")
-                continue
-            if "DATERANGE" in table:
-                # Tablas que requieren rango de fechas
-                print(f"Saltando tabla {table} porque falta rango de fechas.")
-                continue
-            
-            print(f"Ejecutando consulta en tabla: {table} con game_id: {game_id}")
-            query = session.prepare(CASSANDRA_LOG_QUERY.format(table))
-            result = session.execute(query, (game_id,))
-            logs.extend(result)
-        except Exception as e:
-            print(f"Error al ejecutar la consulta en tabla {table}: {e}")
-            continue
+def stablish_a_daterange():
+    print("Estableciendo rango de fechas")
+    start_day = datetime.datetime.strptime(input("Start Day (yyyy-MM-dd): "), "%Y-%m-%d").date()
+    end_day = datetime.datetime.strptime(input("End Day (yyyy-MM-dd): "), "%Y-%m-%d").date()
+    return start_day, end_day
+
+def get_game_id(session = connections.Dgraph_client):
+    print("Consultando todos los juegos")
+
+    result = d.get_all_games(session)
+    print(result)
+    return input("Inserta el uid del juego: ")
+
     
-    return logs
+def format_logs(result):
+    print("\nRegistros de juegos por usuario:")
+    print("=" * 80)
+    
+    for row in result:
+        log = LOG.LOG(
+            account_id=row.account_id,
+            game_id=row.game_id,
+            description=row.description,
+            start=row.start,
+            end=row.end
+        )
+        print("_"*50)
+        print(f"ID: {log.account_id}")
+        print(f"Juego: {log.game_id}")
+        print(f"Descripción: {log.description}")
+        print(f"Fecha de inicio: {log.start}")
+        print(f"Fecha de fin: {log.end}")
+        print("-" * 50)
 
-
+    
+    print("=" * 80)

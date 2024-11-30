@@ -45,16 +45,11 @@ def admin_menu():
         choice = input("Enter option: ")
         
         if choice == "1":
-            account_id = input("Enter account ID: ")
-            logs = get_logs_by_user(connections.Cassandra_session, account_id)
-            for log in logs:
-                print(log)
+            get_logs_by_user(connections.Cassandra_session)
         
         elif choice == "2":
-            game_id = input("Enter game ID: ")
-            logs = get_logs_by_game(connections.Cassandra_session, game_id)
-            for log in logs:
-                print(log)
+            get_logs_by_game(connections.Cassandra_session)
+            
         
         elif choice == "3":
             break

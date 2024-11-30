@@ -1,6 +1,8 @@
 from queries.cassandra_queries import CASSANDRA_LOGIN_ACCOUNT_BY_USER_QUERY, CASSANDRA_USERNAMES_MIDDLEWARE, CASSANDRA_LOGIN_ADMIN_QUERY
 import exist
 from models import administrator_model, account_model
+import log_creation
+import datetime
 
 def login(session, username, password, key = None):
     print("Login")
@@ -41,4 +43,6 @@ def login(session, username, password, key = None):
             password=result.password,
             creation_date=result.creation_date
         )
+        day = datetime.datetime.now()
+        log_creation.log_creation(session, account_obj.account_id, "None", f"Login at {day}", day, day)
         return account_obj, admin, "Usuario logeado"

@@ -58,3 +58,27 @@ def games_by_cat(client, category_name, n):
         return flattened_games
     finally:
         txn.discard()
+
+def get_all_games(client):
+    query = """
+    {
+        all_games(func: has(j_name)) {
+            uid
+            j_name
+            description
+            category {
+                c_name
+            }
+        }
+    }
+    """
+    txn = client.txn()
+    try:
+        res = txn.query(query)
+        games = json.loads(res.json).get('all_games', [])
+
+        return games
+
+    finally:
+        txn.discard()
+        return None
