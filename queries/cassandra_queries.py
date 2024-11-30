@@ -76,6 +76,6 @@ LOG_BY_USER_GAME_QUERY = """
 
 LOG_BY_GAME_QUERY = """
     SELECT *
-    FROM LOGS_BY_USER
-    WHERE game_id = ?
+    FROM LOGS_BY_GAME
+    WHERE game_id = ? AND start >= ? AND start <= ?
 """

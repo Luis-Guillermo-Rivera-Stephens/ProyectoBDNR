@@ -33,21 +33,34 @@ def get_logs_by_user(session = connections.Cassandra_session):
     else:
         result = session.execute(query, (account_id,))
     format_logs(result)
-
+    
 def get_logs_by_game(session):
-    game_id = get_game_id()
-    query = q.LOG_BY_GAME_QUERY
-    date_flag = input("Quieres establecer un rango de fechas (y/n): ")
-    date_flag = date_flag.lower() == "y" 
+    game_id = get_game_id()  
+    query = "SELECT * FROM LOGS_BY_GAME WHERE game_id = ?"  
+
+    
+    date_flag = input("Quieres establecer un rango de fechas (y/n): ").lower() == "y"
     if date_flag:
         start, end = stablish_a_daterange()
-        query = query+q.DATE_RANGE
-    query = session.prepare(query)
-    if date_flag:
-        result = session.execute(query, (game_id, start, end))
-    else:
-        result = session.execute(query, (game_id,))
-    format_logs(result)
+        query += " AND start >= ? AND start <= ?"
+
+   
+    print(f"Consulta a ejecutar: {query}")
+
+    try:
+        query = session.prepare(query)  
+
+        
+        if date_flag:
+            result = session.execute(query, (game_id, start, end))
+        else:
+            result = session.execute(query, (game_id,))
+        
+        format_logs(result)
+    except Exception as e:
+        print(f"Error ejecutando la consulta: {e}")
+
+
     
 
 
