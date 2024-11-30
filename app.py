@@ -23,12 +23,11 @@ def login_menu():
         key = None
 
     account, admin, msg = login.login(connections.Cassandra_session, username, password, key)
-    print("ACCOUNT: ",account)
+    
     if account is None:
         print(msg)
         return None
     
-    print(account.admin_id)
     if admin:
         admin_menu()
     else:
@@ -68,16 +67,36 @@ def user_menu(session_mongo, account):
     # Llamar a la función get_most_played_stats
     while True:
         mpg, mpc = userinfo.get_most_played_stats(session_mongo, account_id)
-        print(mpg)
-        print(mpc)
-        games = userinfo.cat(connections.Dgraph_client, mpc)
-        userinfo.format_games(games)
+        
+        option = choose_games_option()
+        if option == 1:
+            print("Keep playing")
+            games = userinfo.get_most_played_games(connections.Dgraph_client, mpg)
+            userinfo.format_games(games)
+
+        elif option == 2:
+            print("Recomendations")
+            games = userinfo.cat(connections.Dgraph_client, mpc)
+            userinfo.format_games(games)
+        elif option == 3:
+            break
+        else:
+            continue
+
         choice = int(input("Elige el juego con el numero o 0 para salir de tu sesion: "))
         if choice == 0:
             break
         game = games[choice-1]
         playing.playing(session_mongo, account_id, game["uid"], game["category"]["c_name"])
 
+def choose_games_option():
+    print("="*50)
+    print("1. Keep playing")
+    print("2. Recomendation")
+    print("3. Exit")
+    choice = input("Enter option: ")
+    print("="*50)
+    return int(choice)
 
 
 def register_menu():

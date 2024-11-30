@@ -7,8 +7,7 @@ import datetime
 def login(session, username, password, key = None):
     print("Login")
     flag, usernameRes = exist.username_exist(session, username)
-    print(usernameRes)
-    print("Flag de login: ", flag)
+
 
     if flag == False:
         return None, False, "No existe el usuario"

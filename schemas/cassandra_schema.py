@@ -112,7 +112,6 @@ LOGS_BY_GAME_DATERANGE = """
 """
 
 def create_keyspace(session, keyspace, replication_factor):
-    print(f"Creating keyspace: {keyspace} with replication factor {replication_factor}")
     session.execute(CREATE_KEYSPACE.format(keyspace, replication_factor))
 
 def set_keyspace(session, keyspace):

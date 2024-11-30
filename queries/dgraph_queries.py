@@ -82,3 +82,29 @@ def get_all_games(client):
     finally:
         txn.discard()
         return None
+    
+def get_most_played_games(client, mpg):
+    # Construir la lista de UIDs para el query
+    game_ids = [game.gameID for game in mpg]
+    uids = ",".join(game_ids)
+    
+    query = """
+    {
+        games_by_ids(func: uid(%s)) {
+            uid
+            j_name
+            description
+            category {
+                c_name
+            }
+        }
+    }
+    """ % uids
+
+    txn = client.txn()
+    try:
+        res = txn.query(query)
+        result = json.loads(res.json).get('games_by_ids', [])
+        return result
+    finally:
+        txn.discard()

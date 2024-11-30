@@ -11,9 +11,8 @@ def playing(mongo_session, id_account, game_id, category):
     end_time = datetime.datetime.now()
 
     elapsed_time = round((end_time - start_time).total_seconds())
-    print("Tiempo de juego en segundos:", elapsed_time)
     if elapsed_time > 0:
-        print("Elapsed time:", elapsed_time)
+        
         mongo_queries.update_stats(mongo_session, id_account,game_id, category, elapsed_time)
         log_creation.log_creation(connections.Cassandra_session, id_account, game_id, f"user played {game_id} for {elapsed_time} seconds", start_time, end_time)
 

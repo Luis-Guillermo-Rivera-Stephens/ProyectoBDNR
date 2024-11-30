@@ -75,7 +75,7 @@ def update_stats(
             }}
         )
 
-        print("User updated")
+        
         return True
 
     except Exception as e:
@@ -90,7 +90,7 @@ def get_mongo_data(session, account_id_binary):
         if not user_data:
             print(f"No se encontró usuario con userID: {account_id_binary}")
             return None
-        print("Usuario encontrado:", user_data)
+        
         return user_data
     except Exception as e:
         print(f"Error al obtener datos de MongoDB: {str(e)}")

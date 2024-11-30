@@ -72,9 +72,6 @@ def get_most_played_stats(session, account_id: uuid.UUID):
     games_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_games_pipeline))
     categories_result = list(session.database[connections.MONGODB_COLLECTION_NAME].aggregate(most_played_categories_pipeline))
 
-    print(games_result)
-    print(categories_result)
-
     # Convertir resultados a objetos Pydantic
     games = []
     categories = []
@@ -95,29 +92,28 @@ def cat(session_dgraph, categories):
     category_count = len(categories)
 
     recomendados = []
-    print("Categorias: ", category_count)
     if category_count == 0:
         result = dgraph_queries.all_games(session_dgraph, recomendados, 12)
         return result
     elif category_count == 1:
         cat1 = categories[0].category
-        print(cat1)
+        
         result_by_category = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
         result = dgraph_queries.all_games(session_dgraph, result_by_category, 6)
         return result
     elif category_count == 2:
         cat1 = categories[0].category
-        print(cat1)
+        
         cat2 = categories[1].category
-        print(cat2)
+        
 
         result_by_category1 = dgraph_queries.games_by_cat(session_dgraph, cat1, 6)
-        print(len(result_by_category1))
+        
         result_by_category2 = dgraph_queries.games_by_cat(session_dgraph, cat2, 3)
-        print(len(result_by_category2))
+        
         result_by_categories = result_by_category1 + result_by_category2
         result = dgraph_queries.all_games(session_dgraph, result_by_categories, 3)
-        print(len(result))
+        
         return result
 
     
@@ -131,3 +127,6 @@ def format_games(games):
         print("Category: "+game["category"]["c_name"])
         print("="*50)
 
+def get_most_played_games(session, mpg):
+    games = dgraph_queries.get_most_played_games(session, mpg)
+    return games
