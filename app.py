@@ -28,7 +28,11 @@ def login_menu():
         print(msg)
         return None
     
-    print(account.admin_id)
+    if admin:
+        print("Admin ID: ", account.admin_id)
+    else:
+        print("Account ID: ", account.account_id)
+
     if admin:
         admin_menu()
     else:

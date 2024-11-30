@@ -91,13 +91,13 @@ LOGS_BY_USER_GAME_DATERANGE = """
 
 LOGS_BY_GAME = """
         CREATE TABLE IF NOT EXISTS LOGS_BY_GAME (
-                account_id TEXT,
                 game_id TEXT,
+                account_id TEXT,
                 description TEXT,
                 start TIMESTAMP,
                 end TIMESTAMP,
-                PRIMARY KEY (game_id)
-        )
+                PRIMARY KEY (game_id, start)  -- `start` distingue registros dentro del mismo `game_id`
+        );
 """
 
 LOGS_BY_GAME_DATERANGE = """
